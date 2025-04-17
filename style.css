@@ -1,0 +1,252 @@
+/* --- Basic Setup & Dark Theme --- */
+:root {
+    --space-black: #000000;
+    --dark-grey: #1a1a1a;
+    --light-grey: #cccccc;
+    --glow-white: #ffffff;
+    --glow-gold: #ffd700;
+    --glow-orange: #ffcc88;
+    --glow-blue: #87cefa; /* Light sky blue for sanctuary */
+    --stuck-color: #888888; /* Color for stuck ideal particles (if needed elsewhere) */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #141414; /* Dark background */
+    color: var(--light-grey);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+/* --- Instructions Screen --- */
+#instructions {
+    text-align: center;
+    background-color: rgba(10, 10, 20, 0.9);
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(135, 206, 250, 0.2);
+    border: 1px solid rgba(135, 206, 250, 0.3);
+    color: var(--light-grey);
+    z-index: 200;
+}
+#instructions h1 {
+    margin-top: 0;
+    color: var(--glow-white);
+    text-shadow: 0 0 8px var(--glow-white);
+}
+#instructions button {
+    padding: 12px 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background: linear-gradient(45deg, var(--glow-blue), #b0e0e6);
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(135, 206, 250, 0.5);
+}
+#instructions button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(135, 206, 250, 0.8);
+}
+
+/* --- Game Area --- */
+#game-container {
+    position: relative;
+    width: 90vmin;
+    height: 90vmin;
+    max-width: 800px;
+    max-height: 800px;
+    border: 1px solid #334;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+    cursor: default;
+}
+
+/* --- Background Starfield --- */
+#starfield {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+        radial-gradient(1px 1px at 20px 30px, #eee, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 50px 160px, #ddd, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 160px 120px, #ddd, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    opacity: 0.6;
+    z-index: 0; /* Deepest background */
+    animation: panStars 120s linear infinite;
+}
+@keyframes panStars {
+    from { background-position: 0 0; }
+    to { background-position: -400px -400px; }
+}
+
+/* --- Canvas Black Hole Styles --- */
+#new-black-hole {
+  position: absolute;
+  top: 0; left: 0;
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  z-index: 5; /* Below ideals(20), repo(15), above starfield(0) */
+}
+#new-black-hole::before { /* Masking gradient */
+  position: absolute; top: 50%; left: 50%;
+  z-index: 7;
+  display: block; width: 150%; height: 140%;
+  background: radial-gradient(ellipse at 50% 55%, transparent 10%, black 50%);
+  transform: translate3d(-50%, -50%, 0);
+  content: ""; pointer-events: none;
+}
+#new-black-hole::after { /* Color overlay */
+  position: absolute; top: 50%; left: 50%;
+  z-index: 9;
+  display: block; width: 100%; height: 100%;
+  background: radial-gradient(ellipse at 50% 75%, #a900ff 20%, transparent 75%);
+  mix-blend-mode: overlay;
+  transform: translate3d(-50%, -50%, 0);
+  content: ""; pointer-events: none;
+}
+@keyframes aura-glow {
+  0% { background-position: 0 100%; } 100% { background-position: 0 300%; }
+}
+#new-black-hole .aura { /* Animated blurred gradient */
+  position: absolute; top: -71.5%; left: 50%;
+  z-index: 8;
+  width: 30%; height: 140%;
+  background: linear-gradient( 20deg, #00f8f1, #ffbd1e20 16.5%, #fe848f 33%, #fe848f20 49.5%, #00f8f1 66%, #00f8f160 85.5%, #ffbd1e 100% ) 0 100% / 100% 200%;
+  border-radius: 0 0 100% 100%;
+  filter: blur(50px);
+  mix-blend-mode: plus-lighter;
+  opacity: 0.75;
+  transform: translate3d(-50%, 0, 0);
+  animation: aura-glow 5s infinite linear;
+  pointer-events: none;
+}
+#new-black-hole .overlay { /* Scanline effect */
+  position: absolute; top: 0; left: 0;
+  z-index: 10;
+  width: 100%; height: 100%;
+  background: repeating-linear-gradient( transparent, transparent 1px, rgba(255, 255, 255, 0.2) 1px, rgba(255, 255, 255, 0.2) 2px );
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+  pointer-events: none;
+}
+#new-black-hole canvas { /* The canvas itself */
+  position: absolute; top: 0; left: 0;
+  display: block; width: 100%; height: 100%;
+  z-index: 6; /* Base drawing layer for the effect */
+}
+
+/* --- Repository / Sanctuary --- */
+#repository {
+    position: absolute; top: 3%; left: 50%;
+    transform: translateX(-50%);
+    width: 18%; height: 8%;
+    border-radius: 5px; border: 1px solid var(--glow-blue);
+    background: radial-gradient(ellipse at center, rgba(135, 206, 250, 0.2) 0%, rgba(0,0,0,0.3) 100%);
+    box-shadow: 0 0 10px var(--glow-blue), 0 0 20px var(--glow-blue), inset 0 0 8px rgba(135, 206, 250, 0.3);
+    z-index: 15; /* Above new-black-hole */
+    display: flex; justify-content: center; align-items: center;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+#repository:hover {
+    box-shadow: 0 0 15px var(--glow-blue), 0 0 30px var(--glow-blue), inset 0 0 12px rgba(135, 206, 250, 0.5);
+    border-color: #fff;
+}
+.repo-core {
+    color: #fff; font-size: 1em; font-weight: bold;
+    text-shadow: 0 0 3px var(--glow-blue), 0 0 8px var(--glow-blue);
+}
+
+/* --- Ideal Styling --- */
+.ideal {
+    position: absolute;
+    width: auto; height: auto;
+    cursor: grab;
+    /* Added transform and opacity to transition for shrinking effect */
+    transition: opacity 0.3s ease-out, filter 0.3s ease, transform 0.1s linear;
+    user-select: none;
+    z-index: 20; /* Above repository */
+    display: flex; justify-content: center; align-items: center;
+    filter: drop-shadow(0 0 3px var(--ideal-glow-color-faded)) drop-shadow(0 0 5px var(--ideal-glow-color));
+    /* Ensure transform origin is centered for scaling */
+    transform-origin: center center;
+}
+.ideal-content {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 4px; min-width: 40px; min-height: 40px;
+    text-align: center; justify-content: center;
+}
+.ideal-icon {
+    font-size: 22px; line-height: 1; color: var(--ideal-color);
+    text-shadow: 0 0 3px var(--ideal-glow-color), 0 0 6px #fff;
+}
+.ideal-label {
+    font-size: 8px; font-weight: normal; color: var(--light-grey);
+    margin-top: 2px; line-height: 1; text-shadow: 1px 1px 2px #000;
+}
+.ideal.dragging {
+    cursor: grabbing;
+    transform: scale(1.1); /* Base dragging scale */
+    filter: drop-shadow(0 0 6px var(--ideal-glow-color)) drop-shadow(0 0 12px var(--ideal-glow-color));
+    z-index: 50; /* Highest when dragged */
+}
+
+/* --- UI Elements --- */
+#ui-bottom-left { position: absolute; bottom: 15px; left: 15px; z-index: 100; }
+#energy-bar-container {
+    width: 140px; height: 22px; background-color: rgba(30, 30, 40, 0.7);
+    border-radius: 5px; border: 1px solid #445; overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
+}
+#energy-bar {
+    height: 100%; width: 100%;
+    background: linear-gradient(to right, var(--glow-blue), #d8bfd8);
+    border-radius: 4px; transition: width 0.3s linear;
+    box-shadow: 0 0 5px var(--glow-blue), 0 0 3px #fff; opacity: 0.8;
+}
+#energy-text {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    text-align: center; line-height: 22px; color: var(--light-grey);
+    font-size: 0.85em; font-weight: bold; text-shadow: 1px 1px 2px #000;
+    pointer-events: none;
+}
+
+/* --- State Classes & Effects --- */
+.hidden { display: none; }
+
+.saved-in-repository { /* Fade out when saved */
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.2s linear, transform 0.2s linear;
+}
+
+/* Original Game Particle Effects (e.g., for saving) */
+#particle-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+.particle {
+    position: absolute; width: 4px; height: 4px; border-radius: 50%;
+    background-color: var(--particle-color, var(--glow-white));
+    opacity: 0.9; box-shadow: 0 0 3px var(--particle-color);
+    transition: transform 0.6s cubic-bezier(0.17, 0.84, 0.44, 1), opacity 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* No energy flash effect */
+.no-energy-flash { animation: no-energy-flash-dark 0.3s ease-out; }
+@keyframes no-energy-flash-dark {
+    0%, 100% { filter: initial; }
+    50% { filter: drop-shadow(0 0 6px red) drop-shadow(0 0 10px red); }
+}

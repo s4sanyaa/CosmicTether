@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Tether</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@100..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="instructions">
+        <h1>Cosmic Tether</h1>
+        <p>Drag the Ideals to the Sanctuary before they become trapped by the anomaly.</p>
+        <p>Trapped ideals cannot be recovered. Manage your energy wisely.</p>
+        <button id="start-button">Engage</button>
+    </div>
+
+    <div id="game-container" class="hidden">
+        <div id="starfield"></div>
+
+        <div id="new-black-hole">
+          <canvas id="blackhole-canvas" class="js-canvas"></canvas>
+          <div class="aura"></div>
+          <div class="overlay"></div>
+        </div>
+        <div id="repository">
+            <div class="repo-core">Sanctuary</div>
+        </div>
+
+       <div id="ui-bottom-left">
+            <div id="energy-bar-container">
+                <div id="energy-bar"></div>
+                <span id="energy-text">Energy</span>
+            </div>
+       </div>
+
+        <div id="particle-container"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
